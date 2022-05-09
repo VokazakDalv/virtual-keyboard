@@ -3,7 +3,7 @@
   padding: 0;
   -webkit-box-sizing: border-box;
           box-sizing: border-box;
-  font-size: consolas;
+  font-family: consolas;
 }
 
 body {
@@ -13,9 +13,13 @@ body {
   -webkit-box-pack: center;
       -ms-flex-pack: center;
           justify-content: center;
-  -webkit-box-align: end;
-      -ms-flex-align: end;
-          align-items: end;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
   min-height: 100vh;
   background: #232323;
 }
@@ -33,6 +37,25 @@ body {
           justify-content: space-between;
 }
 
+form {
+  max-width: 1400px;
+  width: 100%;
+  padding: 15px;
+  max-height: 300px;
+  height: 25vh;
+}
+
+textarea {
+  max-width: 1400px;
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
+  padding: 10px;
+  border: 2px solid gray;
+  font-size: 2rem;
+  resize: none;
+}
+
 span {
   position: relative;
   display: inline-block;
@@ -47,6 +70,7 @@ span {
   height: 80px;
   border-radius: 10px;
   overflow: hidden;
+  color: #fff;
   background: -webkit-gradient(linear, left top, left bottom, from(#282828), to(#202020));
   background: linear-gradient(180deg, #282828, #202020);
   -webkit-box-shadow: inset -8px 0 8px rgba(0, 0, 0, 0.15), inset 0 -8px 8px rgba(0, 0, 0, 0.25), 0 0 0 2px rgba(0, 0, 0, 0.75), 10px 20px 25px rgba(0, 0, 0, 0.4);
@@ -82,9 +106,8 @@ span .up {
 
 span .down {
   position: absolute;
-  color: #fff;
+  color: inherit;
   font-style: normal;
-  text-transform: uppercase;
   font-size: 1.5em;
 }
 
@@ -96,9 +119,14 @@ span:hover i {
   color: #7b6f6f;
 }
 
-.spansta-click {
+.span-click {
   -webkit-box-shadow: none;
           box-shadow: none;
+}
+
+.span-active {
+  color: #000;
+  opacity: 0.5;
 }
 
 .big {

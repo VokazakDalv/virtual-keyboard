@@ -2,12 +2,13 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-size: consolas;
+  font-family: consolas;
 }
 body {
   display: flex;
   justify-content: center;
-  align-items: end;
+  align-items: center;
+  flex-direction: column;
   min-height: 100vh;
   background: #232323;
 }
@@ -17,6 +18,23 @@ body {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
+}
+form {
+max-width: 1400px;
+width: 100%;
+padding: 15px;
+max-height: 300px;
+height: 25vh;
+}
+textarea {
+  max-width: 1400px;
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
+  padding: 10px;
+  border: 2px solid rgb(128, 128, 128);
+  font-size: 2rem;
+  resize: none;
 }
 span {
   position: relative;
@@ -30,6 +48,7 @@ span {
   height: 80px;
   border-radius: 10px;
   overflow: hidden;
+  color: #fff;
   background: linear-gradient(180deg,#282828,#202020);
   box-shadow: inset -8px 0 8px rgba(0, 0, 0, .15),
   inset 0 -8px 8px rgba(0, 0, 0, .25),
@@ -61,20 +80,23 @@ span {
   }
   & .down {
     position: absolute;
-    color: #fff;
+    color: inherit;
     font-style: normal;
-    text-transform: uppercase;
     font-size: 1.5em;
   }
   &:hover {
     opacity: .75;
-  }
-  &:hover i {
-    color: rgb(123, 111, 111);
+    & i {
+      color: rgb(123, 111, 111);
+    }
   }
 }
-.spansta-click {
+.span-click {
   box-shadow: none;
+}
+.span-active {
+  color: #000;
+  opacity: 0.5;
 }
 .big {
   max-width: 190px;
