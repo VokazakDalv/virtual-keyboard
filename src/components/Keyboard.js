@@ -14,6 +14,7 @@ class Keyboard {
     }
     this.collectionKey = [];
     this.collectionSpan = [];
+    this.lang = 'EN';
     this.form = new Control(document.body, 'form');
     this.textArea = new Control(this.form.node, 'textarea');
     this.textArea.node.focus();
@@ -29,8 +30,6 @@ class Keyboard {
 
     window.addEventListener('keydown', (event) => {
       this.textArea.node.focus();
-      // console.log(`event.key=${event.key}`);
-      // console.log(`event.code=${event.code}`);
       if (arrows.indexOf(event.key) < 0 && specialKeys.indexOf(event.key) < 0) {
         const eventSpan = this.collectionSpan.find((elem) => elem.node.dataset.key
         === event.key.toLowerCase());
@@ -101,20 +100,65 @@ class Keyboard {
         }
       }
     });
+
+    this.runOnKeys(
+      () => {
+        this.changeLang();
+      },
+      'AltLeft',
+      'ControlLeft',
+    );
+  }
+
+  changeLang() {
+    let arr = [...keysRus];
+    if (this.lang === 'EN') {
+      this.lang = 'RU';
+    } else {
+      this.lang = 'EN';
+      arr = [...keysEng];
+    }
+    this.collectionKey.forEach((elem, index) => {
+      const letterContainer = elem;
+      letterContainer.node.innerText = arr[index];
+    });
+  }
+
+  runOnKeys(func, ...args) {
+    let temp = '';
+    temp = this.lang;
+    this.lang = temp;
+    const arrChars = [];
+    document.addEventListener('keydown', (event) => {
+      if (event.repeat) return;
+      arrChars.push(event.code);
+    });
+    document.addEventListener('keyup', () => {
+      if (arrChars.length === 0) return;
+      let runFunc = true;
+      args.forEach((elem) => {
+        if (!arrChars.includes(elem)) {
+          runFunc = false;
+        }
+      });
+      if (runFunc) func();
+      arrChars.length = 0;
+    });
   }
 
   changeLetterCase() {
-    if (this.collectionKey[15].node.innerText === 'q') {
-      this.collectionKey.forEach((elem) => {
-        const letterContainer = elem;
-        letterContainer.node.innerText = elem.node.innerText.toUpperCase();
-      });
-    } else {
-      this.collectionKey.forEach((elem) => {
-        const letterContainer = elem;
-        letterContainer.node.innerText = elem.node.innerText.toLowerCase();
-      });
-    }
+    const firstLetter = this.collectionKey[15].node.innerText;
+    this.collectionSpan.forEach((elem, index) => {
+      if (specialKeys.indexOf(elem.node.dataset.key) < 0) {
+        if (firstLetter.toUpperCase() !== firstLetter) {
+          this.collectionKey[index].node.innerText = this.collectionKey[index].node.innerText
+            .toUpperCase();
+        } else {
+          this.collectionKey[index].node.innerText = this.collectionKey[index].node.innerText
+            .toLowerCase();
+        }
+      }
+    });
   }
 }
 
