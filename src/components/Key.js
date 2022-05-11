@@ -7,8 +7,8 @@ class Key {
     this.span = new Control(parentNode, 'span');
     this.span.node.dataset.key = keyData;
     this.span.node.addEventListener('mousedown', this.mouseDownHandle.bind(this));
-    this.span.node.addEventListener('mouseup', (event) => {
-      event.currentTarget.classList.remove('span-click');
+    this.span.node.addEventListener('mouseup', () => {
+      this.span.node.classList.remove('span-click');
     });
     if (down === 'Backspace' || down === 'Enter' || down === 'Shift' || down === 'CapsLock') {
       this.span.node.classList.add('big');
@@ -24,56 +24,40 @@ class Key {
   }
 
   mouseDownHandle(event) {
+    const datasetKey = this.span.node.dataset.key;
     event.preventDefault();
     this.currentTextArea.node.focus();
-    const start = this.currentTextArea.node.selectionStart;
-    const end = this.currentTextArea.node.selectionEnd;
-    this.keyPrint(start, end);
-    if (this.span.node.dataset.key === ' ') {
-      this.specialKeysHandle(' ');
-    }
+    this.keyPrint();
     this.span.node.addEventListener('mouseout', () => {
       this.span.node.classList.remove('span-click');
     });
     this.span.node.classList.add('span-click');
-
-    if (this.span.node.dataset.key === 'Backspace') {
-      this.specialKeysHandle('Backspace');
-    }
-    if (this.span.node.dataset.key === 'Delete') {
-      this.specialKeysHandle('Delete');
-    }
-    if (this.span.node.dataset.key === 'Tab') {
-      this.specialKeysHandle('Tab');
-    }
-    if (this.span.node.dataset.key === 'Enter') {
-      this.specialKeysHandle('Enter');
-    }
-    if (this.span.node.dataset.key === 'CapsLock') {
+    if (datasetKey === 'CapsLock') {
       this.span.node.classList.toggle('span-active');
+    } else {
+      this.specialKeysHandle(datasetKey);
     }
   }
 
-  keyPrint(start, end, node = this.iDown.node) {
+  keyPrint() {
+    const [node] = [this.currentTextArea.node];
+    const start = node.selectionStart;
+    const end = node.selectionEnd;
     if (specialKeys.indexOf(this.span.node.dataset.key) < 0) {
-      const cursorPosition = this.currentTextArea.node.selectionStart;
-      this.currentTextArea.node.value = this.currentTextArea.node.value.substring(0, start)
-        + node.innerText + this.currentTextArea.node.value.substring(end);
-      this.currentTextArea.node.selectionEnd = cursorPosition + 1;
+      const cursorPosition = node.selectionStart;
+      node.value = node.value.substring(0, start)
+        + this.iDown.node.innerText + node.value.substring(end);
+      node.selectionEnd = cursorPosition + 1;
     }
   }
 
   specialKeysHandle(key) {
-    const cursorPosition = this.currentTextArea.node.selectionStart;
     const [node] = [this.currentTextArea.node];
     const start = node.selectionStart;
     const end = node.selectionEnd;
+    const cursorPosition = node.selectionStart;
     switch (key) {
       case ' ':
-        console.log(start);
-        console.log(end);
-        console.log(node.value.substring(0, start));
-        console.log(node.value.substring(end));
         node.value = `${node.value.substring(0, start)} ${node.value.substring(start)}`;
         node.selectionEnd = cursorPosition + 1;
         break;
@@ -94,12 +78,7 @@ class Key {
         node.selectionEnd = cursorPosition + 1;
         break;
       default:
-        console.log('Нет таких значений');
     }
-  }
-
-  arrowHandle() {
-    console.log('arrowHandle');
   }
 }
 export default Key;
