@@ -17,7 +17,6 @@ class Keyboard {
     this.lang = 'EN';
     this.form = new Control(document.body, 'form');
     this.textArea = new Control(this.form.node, 'textarea');
-    this.textArea.node.focus();
     this.container = new Control(document.body, 'div', 'container');
     keys.forEach((elem, index) => {
       this.key = new Key(this.container.node, keysData[index], '', elem, this.textArea);
@@ -28,76 +27,43 @@ class Keyboard {
       }
     });
 
-    window.addEventListener('keydown', (event) => {
+    document.addEventListener('keydown', (event) => {
       this.textArea.node.focus();
-      if (arrows.indexOf(event.key) < 0 && specialKeys.indexOf(event.key) < 0) {
-        const eventSpan = this.collectionSpan.find((elem) => elem.node.dataset.key
-        === event.key.toLowerCase());
-        eventSpan.node.classList.add('span-click');
-      } else {
-        const eventSpan = this.collectionSpan.find((elem) => elem.node.dataset.key
-        === event.key);
-        if (event.key !== 'Shift' && event.key !== 'Control' && event.key !== 'Alt') {
-          eventSpan.node.classList.add('span-click');
-        }
-        if (event.key === 'Shift' && event.code === 'ShiftLeft') {
-          eventSpan.node.classList.add('span-click');
-        } else if (event.key === 'Shift' && event.code === 'ShiftRight') {
-          this.collectionSpan[54].node.classList.add('span-click');
-        }
-        if (event.key === 'Control' && event.code === 'ControlLeft') {
-          eventSpan.node.classList.add('span-click');
-        } else if (event.key === 'Control' && event.code === 'ControlRight') {
-          this.collectionSpan[63].node.classList.add('span-click');
-        }
-        if (event.key === 'Alt' && event.code === 'AltLeft') {
-          event.preventDefault();
-          eventSpan.node.classList.add('span-click');
-        } else if (event.key === 'Alt' && event.code === 'AltRight') {
-          event.preventDefault();
-          this.collectionSpan[59].node.classList.add('span-click');
-        }
-      }
-      this.key.keyPrint(this.textArea.node.selectionStart, this.textArea.node.selectionEnd);
-      if (event.key === 'Tab') {
+      if (keysRus.indexOf(event.key) >= 0 || keysEng.indexOf(event.key) >= 0) {
         event.preventDefault();
-        this.key.tabHandle();
-      }
-      if (event.key === 'CapsLock') {
-        event.preventDefault();
-        this.changeLetterCase();
-      }
-      if (arrows.indexOf(event.key) >= 0) {
-        event.preventDefault();
-        this.key.arrowHandle();
+        if (arrows.indexOf(event.key) < 0 && specialKeys.indexOf(event.key) < 0) {
+          const eventSpan = this.collectionSpan.find((elem) => elem.node.dataset.key
+          === event.key.toLowerCase());
+          eventSpan.node.classList.add('span-click');
+          this.keyPrint(
+            this.textArea.node.selectionStart,
+            this.textArea.node.selectionEnd,
+            eventSpan.node.children[1].innerHTML,
+          );
+        } else {
+          this.specialKeysHandle(event);
+        }
+
+        if (event.key === 'Tab') {
+          this.key.tabHandle();
+        }
+        if (event.key === 'CapsLock') {
+          this.collectionSpan[29].node.classList.toggle('span-active');
+          this.changeLetterCase();
+        }
+        if (arrows.indexOf(event.key) >= 0) {
+          this.key.keyPrint(this.textArea.node.selectionStart, this.textArea.node.selectionEnd);
+        }
       }
     });
-    window.addEventListener('keyup', (event) => {
+
+    document.addEventListener('keyup', (event) => {
       if (arrows.indexOf(event.key) < 0 && specialKeys.indexOf(event.key) < 0) {
         const eventSpan = this.collectionSpan.find((elem) => elem.node.dataset.key
         === event.key.toLowerCase());
         eventSpan.node.classList.remove('span-click');
       } else {
-        const eventSpan = this.collectionSpan.find((elem) => elem.node.dataset.key
-        === event.key);
-        if (event.key !== 'Shift' && event.key !== 'Control' && event.key !== 'Alt') {
-          eventSpan.node.classList.remove('span-click');
-        }
-        if (event.key === 'Shift' && event.code === 'ShiftLeft') {
-          eventSpan.node.classList.remove('span-click');
-        } else if (event.key === 'Shift' && event.code === 'ShiftRight') {
-          this.collectionSpan[54].node.classList.remove('span-click');
-        }
-        if (event.key === 'Control' && event.code === 'ControlLeft') {
-          eventSpan.node.classList.remove('span-click');
-        } else if (event.key === 'Control' && event.code === 'ControlRight') {
-          this.collectionSpan[63].node.classList.remove('span-click');
-        }
-        if (event.key === 'Alt' && event.code === 'AltLeft') {
-          eventSpan.node.classList.remove('span-click');
-        } else if (event.key === 'Alt' && event.code === 'AltRight') {
-          this.collectionSpan[59].node.classList.remove('span-click');
-        }
+        this.specialKeysHandle(event);
       }
     });
 
@@ -108,6 +74,44 @@ class Keyboard {
       'AltLeft',
       'ControlLeft',
     );
+  }
+
+  specialKeysHandle(event) {
+    if (!event.repeat) {
+      const eventSpan = this.collectionSpan.find((elem) => elem.node.dataset.key
+          === event.key);
+      if (event.key !== 'Shift' && event.key !== 'Control' && event.key !== 'Alt') {
+        eventSpan.node.classList.toggle('span-click');
+      }
+      if (event.key === 'Shift') {
+        if (event.code === 'ShiftLeft') {
+          eventSpan.node.classList.toggle('span-click');
+        } else {
+          this.collectionSpan[54].node.classList.toggle('span-click');
+        }
+      }
+      if (event.key === 'Control') {
+        if (event.code === 'ControlLeft') {
+          eventSpan.node.classList.toggle('span-click');
+        } else {
+          this.collectionSpan[63].node.classList.toggle('span-click');
+        }
+      }
+      if (event.key === 'Alt') {
+        if (event.code === 'AltLeft') {
+          eventSpan.node.classList.toggle('span-click');
+        } else {
+          this.collectionSpan[59].node.classList.toggle('span-click');
+        }
+      }
+    }
+  }
+
+  keyPrint(start, end, nodeText) {
+    const cursorPosition = this.textArea.node.selectionStart;
+    this.textArea.node.value = this.textArea.node.value.substring(0, start)
+        + nodeText + this.textArea.node.value.substring(end);
+    this.textArea.node.selectionEnd = cursorPosition + 1;
   }
 
   changeLang() {
